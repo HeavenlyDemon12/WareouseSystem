@@ -16,7 +16,7 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/users")
+    @PostMapping("/register")
     public ResponseEntity<ResponseStructure<UserResponse>> addUser(@RequestBody UserRegistrationRequest urr){
        UserResponse ur = userService.addUser(urr);
        ResponseStructure<UserResponse> responseStructure = new ResponseStructure(HttpStatus.CREATED.value(),"User Successfully Added Into the Database",ur);
@@ -35,6 +35,7 @@ public class UserController {
         ResponseStructure<UserResponse> responseStructure = new ResponseStructure<>(HttpStatus.CREATED.value(), "User Find By Respected Id",userResponse);
         return new ResponseEntity<ResponseStructure<UserResponse>>(responseStructure,HttpStatus.CREATED);
     }
+
     @DeleteMapping("/users/{userId}")
     public ResponseEntity<ResponseStructure<UserResponse>> deleteUserById(@PathVariable String userId){
         UserResponse userResponse = userService.deleteUserById(userId);

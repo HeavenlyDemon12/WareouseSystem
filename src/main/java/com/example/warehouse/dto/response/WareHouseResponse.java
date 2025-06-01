@@ -1,6 +1,6 @@
 package com.example.warehouse.dto.response;
 
-public record WareHouseResponse(
+public record WareHouseResponse (
     String warehouseId,
     String name,
     String city,

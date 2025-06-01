@@ -8,11 +8,15 @@ import com.example.warehouse.entity.Admin;
 import com.example.warehouse.entity.Staff;
 import com.example.warehouse.entity.User;
 import com.example.warehouse.enums.UserRole;
+import com.example.warehouse.exceptions.UserNotFoundByEmail;
 import com.example.warehouse.exceptions.UserNotFoundByIdException;
 import com.example.warehouse.repository.UserRepository;
 import com.example.warehouse.service.contract.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import static com.example.warehouse.security.AuthUtils.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -20,6 +24,9 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
     @Autowired
     private UserMapper userMapper;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
     @Override
     public UserResponse addUser(UserRegistrationRequest urr) {
 
@@ -32,14 +39,23 @@ public class UserServiceImpl implements UserService {
             } else {
                 throw new IllegalArgumentException("Unsupported role: " + role);
             }
+
+            String encodedPassword = passwordEncoder.encode(user.getPassword());
+            user.setPassword(encodedPassword);
+
             userRepository.save(user);
             return userMapper.userToResponse(user);
     }
 
     @Override
     public UserResponse updateUser(UserRequest request, String userId) {
-       User user = userRepository.findById(userId).orElseThrow(() -> new UserNotFoundByIdException("User Not Found!!"));
+
+        User user = getCurrentUserName().map(username -> userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundByEmail("User not found by id") ) )
+                .orElseThrow(() -> new UserNotFoundByEmail("User is not Authorized"));
+
        user = userMapper.requestToEntity(request,user);
+
+
        userRepository.save(user);
        return userMapper.userToResponse(user);
     }
