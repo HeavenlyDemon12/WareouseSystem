@@ -8,7 +8,7 @@ import com.example.warehouse.dto.response.UserResponse;
 public interface UserService {
     UserResponse addUser(UserRegistrationRequest user);
 
-    UserResponse updateUser(UserRequest request, String userId);
+    UserResponse updateUser(UserRequest request);
 
     UserResponse findUserById(String userId);
 

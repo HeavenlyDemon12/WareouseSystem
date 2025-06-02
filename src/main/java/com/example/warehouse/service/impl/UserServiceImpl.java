@@ -48,14 +48,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserResponse updateUser(UserRequest request, String userId) {
+    public UserResponse updateUser(UserRequest request) {
 
-        User user = getCurrentUserName().map(username -> userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundByEmail("User not found by id") ) )
+        User exUser = getCurrentUserName().map(username -> userRepository.findByEmail(username).orElseThrow(() -> new UserNotFoundByEmail("User not found by id") ) )
                 .orElseThrow(() -> new UserNotFoundByEmail("User is not Authorized"));
 
-       user = userMapper.requestToEntity(request,user);
-
-
+        User user = userMapper.requestToEntity(request,exUser);
+        String encodedPassword = passwordEncoder.encode(user.getPassword());
+        user.setPassword(encodedPassword);
        userRepository.save(user);
        return userMapper.userToResponse(user);
     }

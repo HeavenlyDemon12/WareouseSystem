@@ -22,9 +22,9 @@ public class UserController {
        ResponseStructure<UserResponse> responseStructure = new ResponseStructure(HttpStatus.CREATED.value(),"User Successfully Added Into the Database",ur);
        return new ResponseEntity<ResponseStructure<UserResponse>>(responseStructure,HttpStatus.CREATED);
     }
-    @PutMapping("/users/{userId}")
-    public ResponseEntity<ResponseStructure<UserResponse>> updateUser(@RequestBody UserRequest request, @PathVariable String userId){
-        UserResponse userResponse = userService.updateUser(request,userId);
+    @PutMapping("/users}")
+    public ResponseEntity<ResponseStructure<UserResponse>> updateUser(@RequestBody UserRequest request){
+        UserResponse userResponse = userService.updateUser(request);
         ResponseStructure<UserResponse> responseStructure = new ResponseStructure<>(HttpStatus.CREATED.value(), "Update Details Update Successfully",userResponse);
 
         return new ResponseEntity<ResponseStructure<UserResponse>>(responseStructure,HttpStatus.CREATED);
